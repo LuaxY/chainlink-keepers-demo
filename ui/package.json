@@ -1,0 +1,67 @@
+{
+  "name": "chainlink-keepers-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "core-js": "^3.19.1",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.0-0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^5.0.0-rc.0",
+    "@vue/cli-plugin-eslint": "^5.0.0-rc.0",
+    "@vue/cli-plugin-router": "^5.0.0-rc.0",
+    "@vue/cli-plugin-vuex": "^5.0.0-rc.0",
+    "@vue/cli-service": "^5.0.0-rc.0",
+    "@vue/compiler-sfc": "^3.2.21",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@walletconnect/web3-provider": "^1.6.6",
+    "autoprefixer": "^10.4.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^7.20.0",
+    "ethers": "^5.5.1",
+    "javascript-time-ago": "^2.3.10",
+    "lodash": "^4.17.21",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "numeral": "^2.0.6",
+    "postcss": "^8.3.11",
+    "prettier": "^2.4.1",
+    "stylus": "^0.55.0",
+    "stylus-loader": "^6.1.0",
+    "tailwindcss": "^2.2.19",
+    "vue-i18n": "^9.1.7",
+    "vue3-jazzicon": "^0.1.2",
+    "web3modal": "^1.9.4"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended",
+      "@vue/prettier"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "vue/multi-word-component-names": "off",
+      "vue/no-multiple-template-root": "off"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
