@@ -1,10 +1,11 @@
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = {
-  transpileDependencies: ['vuex-persist'],
   configureWebpack: {
-    plugins: [
-      new NodePolyfillPlugin()
-    ]
-  }
-}
+    devtool: "source-map",
+  },
+  transpileDependencies: ["vuex-persist"],
+  configureWebpack: {
+    plugins: [new NodePolyfillPlugin()],
+  },
+};

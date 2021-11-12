@@ -1,45 +1,40 @@
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+// import WalletConnectProvider from "@walletconnect/web3-provider";
 import networks from "../../mixins/networks.json";
 
-const networkId = process.env.VUE_APP_NETWORK_ID;
+export const networkId = process.env.VUE_APP_NETWORK_ID;
 const network = networks[networkId];
-
-// export const defaultProvider = new ethers.providers.InfuraProvider(
-//   null,
-//   process.env.VUE_APP_INFURA_ID
-// );
 
 export const defaultProvider = new ethers.providers.JsonRpcProvider(
   network.rpc[0]
 );
 
 const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: process.env.VUE_APP_INFURA_ID,
-      rpc: {
-        // networkId: network.rpc[0],
-      },
-    },
-  },
+  //   walletconnect: {
+  //     package: WalletConnectProvider,
+  //     options: {
+  //       infuraId: process.env.VUE_APP_INFURA_ID,
+  //       rpc: {
+  //         // networkId: network.rpc[0],
+  //       },
+  //     },
+  //   },
 };
 
-providerOptions.walletconnect.options.rpc[networkId] = network.rpc[0];
+// providerOptions.walletconnect.options.rpc[networkId] = network.rpc[0];
 
 export const web3Modal = new Web3Modal({
   network: "mainnet",
   cacheProvider: true,
   providerOptions,
-  theme: {
-    background: "var(--main-bg)",
-    main: "var(--main-text)",
-    secondary: "var(--main-link)",
-    border: "var(--main-border)",
-    hover: "var(--main-hover)",
-  },
+  // theme: {
+  //   background: "var(--main-bg)",
+  //   main: "var(--main-text)",
+  //   secondary: "var(--main-link)",
+  //   border: "var(--main-border)",
+  //   hover: "var(--main-hover)",
+  // },
 });
 
 export let provider = null;
@@ -47,12 +42,11 @@ export let web3Provider = null;
 
 export function changeNetwork() {
   if (!web3Provider) return;
-
   web3Provider.request({
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: ethers.utils.hexlify(network.chainId),
+        chainId: ethers.utils.hexValue(network.chainId),
         chainName: network.name,
         nativeCurrency: network.nativeCurrency,
         rpcUrls: network.rpc,
@@ -125,6 +119,8 @@ const actions = {
 
   logout({ commit }) {
     web3Modal.clearCachedProvider();
+    // Web3Modal.cachedProvider = "";
+    // Web3Modal.removeLocal(Web3Modal.CACHED_PROVIDER_KEY);
     localStorage.removeItem("walletconnect");
     commit("address", "");
     commit("error", "");
@@ -132,6 +128,7 @@ const actions = {
     commit("ens", "");
     commit("connected", false);
   },
+
   init({ dispatch }) {
     if (web3Modal.cachedProvider) {
       dispatch("connect");

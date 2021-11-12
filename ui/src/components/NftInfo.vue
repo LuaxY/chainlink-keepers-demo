@@ -16,11 +16,7 @@
         <td>{{ _n(i + 1, "0o") }}</td>
         <td>{{ winner.id }}</td>
         <td>
-          <UiAvatar
-            class="mr-0.5 -mt-0.5"
-            :opts="{ seed: winner.address, size: 16 }"
-          />
-          {{ _shorten(winner.address) }}
+          <User :address="winner.address" />
         </td>
         <td>{{ _dateAgo(winner.timestamp) }}</td>
       </tr>

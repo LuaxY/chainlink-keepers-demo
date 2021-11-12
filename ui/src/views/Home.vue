@@ -6,7 +6,9 @@
       </div>
       <div class="w-full p-5 bg-white border border-gray-400 rounded"></div>
     </div>
-    <div class="w-1/3 p-5 bg-white border border-gray-400 rounded"></div>
+    <div class="w-1/3 p-5 bg-white border border-gray-400 rounded">
+      <Interact />
+    </div>
     <div class="w-1/3 p-5 bg-white border border-gray-400 rounded">
       <HardhatMint />
     </div>
@@ -14,12 +16,9 @@
 </template>
 
 <script>
+import Interact from "../components/Interact.vue";
 export default {
+  components: { Interact },
   name: "Home",
 };
 </script>
-
-<style lang="stylus">
-body
-  @apply bg-gray-100
-</style>

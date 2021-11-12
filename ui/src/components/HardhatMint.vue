@@ -15,14 +15,10 @@
     >
       Toggle Super Shadowy Panel
     </button>
-    <table class="w-full mt-5" v-if="enabled">
+    <table class="w-full mt-5" v-if="enabled && accounts.length > 0">
       <tr v-for="(account, i) in accounts" :key="account">
         <td class="w-3/12 py-3">
-          <UiAvatar
-            class="mr-0.5 -mt-0.5"
-            :opts="{ seed: account.address, size: 16 }"
-          />
-          {{ _shorten(account.address) }}
+          <User :address="account.address" />
         </td>
         <td class="w-2/12 text-center">
           {{ _n(account.balance, "0,0.[000000]") }}
@@ -37,14 +33,16 @@
             MINT
           </button>
         </td>
-        <td class="w-3/12">
+        <td class="flex flex-nowrap py-3">
           {{ account.status }} &nbsp;
           <a
             :href="_explorer(account.txHash, 'tx')"
             target="_blank"
             rel="noopener noreferrer"
+            class="flex"
           >
             {{ _shorten(account.txHash) }}
+            <ExternalLinkIcon class="ml-1 w-4" v-if="account.txHash" />
           </a>
         </td>
       </tr>
@@ -56,9 +54,13 @@
 import { onMounted, ref } from "vue";
 import { ethers } from "ethers";
 import SuperNFTArtifact from "../../../artifacts/contracts/NFT.sol/SuperNFT.json";
+import { ExternalLinkIcon } from "@heroicons/vue/outline";
 
 export default {
   name: "HardhatMint",
+  components: {
+    ExternalLinkIcon,
+  },
   setup() {
     const enabled = ref(true);
     const accounts = ref([]);
