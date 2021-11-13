@@ -33,7 +33,12 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: process.env.API_URL || "",
-      }
+      },
+      accounts: {
+        mnemonic: process.env.MNEMONIC || "",
+        // initialIndex: parseInt(process.env.INITIAL_INDEX || "0"),
+        accountsBalance: "1000000000000000000"
+      },
     },
   },
   solidity: {

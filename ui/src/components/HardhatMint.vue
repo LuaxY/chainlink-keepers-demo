@@ -15,16 +15,30 @@
     >
       Toggle Super Shadowy Panel
     </button>
-    <table class="w-full mt-5" v-if="enabled && accounts.length > 0">
-      <tr v-for="(account, i) in accounts" :key="account">
-        <td class="w-3/12 py-3">
+    <div
+      class="flex flex-col gap-y-2 mt-5"
+      v-if="enabled && accounts.length > 0"
+    >
+      <div class="w-full flex gap-x-1 items-center font-lg">
+        <div class="w-4/12 text-center font-bold">Address</div>
+        <div class="w-3/12 text-center font-bold text-[#8248e5]">MATIC</div>
+        <div class="w-2/12 text-center flex justify-center">
+          <LightningBoltIcon class="w-4" />
+        </div>
+        <div class="w-4/12 text-center font-bold">TX</div>
+      </div>
+      <div
+        class="w-full flex gap-x-1 items-center"
+        v-for="(account, i) in accounts"
+        :key="account"
+      >
+        <div class="w-4/12">
           <User :address="account.address" />
-        </td>
-        <td class="w-2/12 text-center">
+        </div>
+        <div class="w-3/12 text-center">
           {{ _n(account.balance, "0,0.[000000]") }}
-          <b class="text-[#8248e5]">MATIC</b>
-        </td>
-        <td class="w-2/12 text-center">
+        </div>
+        <div class="w-2/12 text-center">
           <button
             @click="mint(i)"
             class="px-3 py-2 rounded font-bold text-white"
@@ -32,8 +46,8 @@
           >
             MINT
           </button>
-        </td>
-        <td class="flex flex-nowrap py-3">
+        </div>
+        <div class="w-4/12 flex flex-nowrap">
           {{ account.status }} &nbsp;
           <a
             :href="_explorer(account.txHash, 'tx')"
@@ -44,9 +58,9 @@
             {{ _shorten(account.txHash) }}
             <ExternalLinkIcon class="ml-1 w-4" v-if="account.txHash" />
           </a>
-        </td>
-      </tr>
-    </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -55,11 +69,13 @@ import { onMounted, ref } from "vue";
 import { ethers } from "ethers";
 import SuperNFTArtifact from "../../../artifacts/contracts/NFT.sol/SuperNFT.json";
 import { ExternalLinkIcon } from "@heroicons/vue/outline";
+import { LightningBoltIcon } from "@heroicons/vue/solid";
 
 export default {
   name: "HardhatMint",
   components: {
     ExternalLinkIcon,
+    LightningBoltIcon,
   },
   setup() {
     const enabled = ref(true);
