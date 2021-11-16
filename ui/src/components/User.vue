@@ -4,8 +4,8 @@
     v-if="popover"
   >
     <template #item>
-      <a class="whitespace-nowrap cursor-pointer">
-        <UiAvatar class="mr-2 -mt-0.5" :opts="{ seed: address, size: 16 }" />
+      <a class="whitespace-nowrap cursor-pointer flex items-center gap-x-2">
+        <UiAvatar :opts="{ seed: address, size: 16 }" />
         {{ _shorten(address) }}
       </a>
     </template>

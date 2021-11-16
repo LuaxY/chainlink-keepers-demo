@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="p-5">
     <button
       @click="enabled = !enabled"
       class="
@@ -29,7 +29,7 @@
       </div>
       <div
         class="w-full flex gap-x-1 items-center"
-        v-for="(account, i) in accounts"
+        v-for="(account, i) in accounts.sort((a, b) => a.id - b.id)"
         :key="account"
       >
         <div class="w-4/12">
@@ -67,6 +67,7 @@
 <script>
 import { onMounted, ref } from "vue";
 import { ethers } from "ethers";
+import { defaultProvider } from "@/store/modules/web3";
 import SuperNFTArtifact from "../../../artifacts/contracts/NFT.sol/SuperNFT.json";
 import { ExternalLinkIcon } from "@heroicons/vue/outline";
 import { LightningBoltIcon } from "@heroicons/vue/solid";
@@ -82,15 +83,26 @@ export default {
     const accounts = ref([]);
     const signers = [];
 
-    const hardhatProvider = new ethers.providers.JsonRpcProvider(
-      "http://127.0.0.1:8545/" // TODO: get from env
-    );
+    const initialIndex = 2;
+    for (let i = initialIndex; i < 10 + initialIndex; i++) {
+      signers.push(
+        ethers.Wallet.fromMnemonic(
+          process.env.VUE_APP_MNEMONIC,
+          `m/44'/60'/0'/0/${i}`
+        ).connect(defaultProvider)
+      );
+    }
 
     const SuperNFT = new ethers.Contract(
-      "0x270C7E29f2Ca96CDF6AC3909841943D4a42bC365", // TODO: get from env
+      process.env.VUE_APP_SUPER_NFT_ADDRESS,
       SuperNFTArtifact.abi,
-      hardhatProvider
+      defaultProvider
     );
+
+    let price;
+    SuperNFT.PRICE().then((value) => {
+      price = value;
+    });
 
     const colors = [
       "bg-red-500 hover:bg-red-700",
@@ -108,7 +120,9 @@ export default {
     async function mint(accountIndex) {
       const signer = signers[accountIndex];
       accounts.value[accountIndex].status = "📩";
-      const tx = await SuperNFT.connect(signer).mint();
+      const tx = await SuperNFT.connect(signer).mint({
+        value: price,
+      });
       accounts.value[accountIndex].txHash = tx.hash;
       accounts.value[accountIndex].status = "⌛";
       tx.wait().then(async () => {
@@ -119,18 +133,19 @@ export default {
       });
     }
 
+    const getAccount = async (i) => {
+      const signer = signers[i];
+      accounts.value.push({
+        id: i,
+        address: await signer.getAddress(),
+        balance: ethers.utils.formatEther(await signer.getBalance()),
+        txHash: "",
+        status: "",
+      });
+    };
+
     onMounted(async () => {
       for (let i = 0; i < 10; i++) {
-        const getAccount = async (i) => {
-          const signer = hardhatProvider.getSigner(i);
-          accounts.value[i] = {
-            address: await signer.getAddress(),
-            balance: ethers.utils.formatEther(await signer.getBalance()),
-            txHash: "",
-            status: "",
-          };
-          signers[i] = signer;
-        };
         getAccount(i);
       }
     });

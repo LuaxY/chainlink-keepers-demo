@@ -4,8 +4,9 @@ import Web3Modal from "web3modal";
 import networks from "../../mixins/networks.json";
 
 export const networkId = process.env.VUE_APP_NETWORK_ID;
-const network = networks[networkId];
+export const network = networks[networkId];
 
+/** @type {ethers.providers.JsonRpcProvider} */
 export const defaultProvider = new ethers.providers.JsonRpcProvider(
   network.rpc[0]
 );

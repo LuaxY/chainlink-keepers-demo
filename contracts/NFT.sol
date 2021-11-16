@@ -35,7 +35,7 @@ contract SuperNFT is ERC721, ReentrancyGuard, Ownable, KeeperCompatibleInterface
 
     event NewWinner(uint256 id, address winner, uint256 timestamp);
 
-    constructor(address superTokenAddress) ERC721("SuperNFT", "NFT") VRFConsumerBase(VRF_COORDINATOR_ADDRESS, LINK_TOKEN_ADDRESS) {
+    constructor(address superTokenAddress) ERC721("SuperNFT", "sNFT") VRFConsumerBase(VRF_COORDINATOR_ADDRESS, LINK_TOKEN_ADDRESS) {
         _superToken = IERC20(superTokenAddress);
     }
 
@@ -49,11 +49,16 @@ contract SuperNFT is ERC721, ReentrancyGuard, Ownable, KeeperCompatibleInterface
         }
     }
 
-    function checkUpkeep(bytes calldata checkData) external view override returns (bool upkeepNeeded, bytes memory performData) {
-        upkeepNeeded = (_counter > 0) && (_counter > _lastRewardIndex) && (_counter % 10 == 0);
+    function _upkeepNeeded() public view returns (bool) {
+        return (_counter > 0) && (_counter > _lastRewardIndex) && (_counter % 10 == 0);
+    }
+
+    function checkUpkeep(bytes calldata checkData) public view override returns (bool upkeepNeeded, bytes memory performData) {
+        upkeepNeeded = _upkeepNeeded();
     }
 
     function performUpkeep(bytes calldata performData) external override {
+        require(_upkeepNeeded(), "performUpkeep: no upkeep needed");
         _lastRewardIndex = _counter;
         getRandomNumber();
     }

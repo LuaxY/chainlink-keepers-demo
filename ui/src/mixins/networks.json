@@ -1,7 +1,7 @@
 {
     "80001": {
         "key": "80001",
-        "name": "Matic Mumbai",
+        "name": "Polygon Mumbai",
         "chainId": 80001,
         "network": "testnet",
         "nativeCurrency": {
