@@ -50,7 +50,7 @@ export function changeNetwork() {
         chainId: ethers.utils.hexValue(network.chainId),
         chainName: network.name,
         nativeCurrency: network.nativeCurrency,
-        rpcUrls: network.rpc,
+        rpcUrls: network.rpc, // FIXME: incorect, must not be the private rpc
         blockExplorerUrls: [network.explorer],
       },
     ],

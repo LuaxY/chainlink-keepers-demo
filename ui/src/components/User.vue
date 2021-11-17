@@ -5,15 +5,15 @@
   >
     <template #item>
       <a class="whitespace-nowrap cursor-pointer flex items-center gap-x-2">
-        <UiAvatar :opts="{ seed: address, size: 16 }" />
-        {{ _shorten(address) }}
+        <UiAvatar :opts="{ seed: formatedAddress, size: 16 }" />
+        {{ _shorten(formatedAddress) }}
       </a>
     </template>
     <template #content>
       <div class="p-4 text-center">
-        <UiAvatar class="mb-4" :opts="{ seed: address, size: 64 }" />
-        <h3>{{ _shorten(address) }}</h3>
-        <a :href="_explorer(address)" target="_blank">
+        <UiAvatar class="mb-4" :opts="{ seed: formatedAddress, size: 64 }" />
+        <h3>{{ _shorten(formatedAddress) }}</h3>
+        <a :href="_explorer(formatedAddress)" target="_blank">
           <div
             class="
               flex
@@ -42,14 +42,18 @@
   </UiPopover>
   <div v-else>
     <a class="whitespace-nowrap cursor-pointer">
-      <UiAvatar class="mr-2 -mt-0.5" :opts="{ seed: address, size: 16 }" />
-      {{ _shorten(address) }}
+      <UiAvatar
+        class="mr-2 -mt-0.5"
+        :opts="{ seed: formatedAddress, size: 16 }"
+      />
+      {{ _shorten(formatedAddress) }}
     </a>
   </div>
 </template>
 
 <script>
 import { ExternalLinkIcon } from "@heroicons/vue/outline";
+import { ethers } from "ethers";
 
 export default {
   name: "User",
@@ -63,6 +67,12 @@ export default {
       default: true,
     },
   },
-  setup() {},
+  setup(props) {
+    const formatedAddress = ethers.utils.getAddress(props.address);
+
+    return {
+      formatedAddress,
+    };
+  },
 };
 </script>

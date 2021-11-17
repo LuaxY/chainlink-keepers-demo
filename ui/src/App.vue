@@ -1,5 +1,8 @@
 <template>
-  <router-view />
+  <div>
+    <router-view />
+    <Notifications />
+  </div>
 </template>
 
 <style lang="stylus">

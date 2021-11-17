@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="pt-5 px-5">
+    <div class="pt-5 px-5 space-y-5">
       <div>
         <div v-if="!connected" class="flex justify-center">
           <button
@@ -9,7 +9,7 @@
               px-4
               py-2
               rounded
-              font-bold
+              font-medium
               text-white
               bg-sky-500
               hover:bg-sky-600
@@ -34,7 +34,7 @@
                 px-5
                 py-3
                 rounded
-                font-semibold
+                font-medium
                 text-sm text-white
                 bg-red-500
                 hover:bg-white
@@ -54,7 +54,7 @@
                 px-4
                 py-2
                 rounded
-                font-semibold
+                font-medium
                 text-sm text-white
                 bg-red-500
                 hover:bg-red-600
@@ -65,83 +65,51 @@
           </div>
         </div>
       </div>
-      <div class="flex items-center gap-x-2">
-        <button
-          @click="mint"
-          class="
-            px-3
-            py-2
-            rounded
-            font-bold
-            text-white
-            bg-blue-500
-            hover:bg-blue-700
-          "
-        >
-          MINT
-        </button>
-        {{ txInfo.status }} &nbsp;
-        <a
-          :href="_explorer(txInfo.txHash, 'tx')"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex"
-        >
-          {{ _shorten(txInfo.txHash) }}
-          <ExternalLinkIcon class="ml-1 w-4" v-if="txInfo.txHash" />
-        </a>
-      </div>
-      <div>
-        <div
-          class="
-            inline-flex
-            items-center
-            font-mono
-            px-4
-            py-2
-            border-2 border-[#375bd2]
-            hover:border-blue-600
-            font-medium
-            bg-white
-            text-[#375bd2]
-            hover:text-blue-600
-            rounded-md
-          "
-        >
-          checkUpkeep()
-          <span class="flex h-3 w-3 relative -mt-0.5 ml-2">
-            <span
-              class="
-                animate-ping
-                absolute
-                inline-flex
-                h-full
-                w-full
-                rounded-full
-                opacity-75
-              "
-              :class="pingColor[0]"
-            ></span>
-            <span
-              class="relative inline-flex rounded-full h-3 w-3"
-              :class="pingColor[1]"
-            ></span>
-          </span>
+    </div>
+    <div class="h-[1px] bg-gray-400 mt-5"></div>
+    <div class="pt-5 px-5 space-y-5">
+      <div class="flex justify-center items-center gap-x-5">
+        <div class="px-4 py-2 border-2 border-gray-400 font-medium rounded-md">
+          <b>Balance</b>: {{ _n(balance, "0,0.[000000]") }}
+          <b class="text-[#8248e5]">MATIC</b>
+        </div>
+        <div class="flex items-center gap-x-2">
+          <button
+            @click="mint"
+            class="
+              px-3
+              py-2
+              rounded
+              font-semibold
+              text-white
+              bg-blue-500
+              hover:bg-blue-700
+            "
+          >
+            MINT
+          </button>
+          {{ txInfo.status }} &nbsp;
+          <a
+            :href="_explorer(txInfo.txHash, 'tx')"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex"
+          >
+            {{ _shorten(txInfo.txHash) }}
+            <ExternalLinkIcon class="ml-1 w-4" v-if="txInfo.txHash" />
+          </a>
         </div>
       </div>
     </div>
     <div class="h-[1px] bg-gray-400 mt-5"></div>
     <h3 class="text-lg font-bold text-center bg-gray-200">Logs</h3>
     <div class="h-[1px] bg-gray-400"></div>
-    <div class="bg-gray-100 w-full h-24 font-mono text-sm p-1">
-      <div>[00:00:00] Test</div>
-      <div>TEST</div>
-    </div>
+    <Logs />
   </div>
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { networkId, changeNetwork } from "@/store/modules/web3";
 import { ExclamationIcon } from "@heroicons/vue/solid";
@@ -158,8 +126,9 @@ export default {
   },
   setup() {
     const store = useStore();
+
+    const balance = ref(0);
     const txInfo = ref({});
-    const pingColor = ref(["bg-red-400", "bg-red-500"]);
 
     store.dispatch("web3/init");
 
@@ -188,28 +157,28 @@ export default {
       txInfo.value.txHash = tx.hash;
       txInfo.value.status = "⌛";
       tx.wait().then(async () => {
-        txInfo.value.balance = ethers.utils.formatEther(
-          await signer.getBalance()
-        );
+        balance.value = ethers.utils.formatEther(await signer.getBalance());
         txInfo.value.status = "✅";
       });
     }
 
-    defaultProvider.on("block", async () => {
-      const result = await SuperNFT.checkUpkeep("0x");
-      pingColor.value = result.upkeepNeeded
-        ? ["bg-green-400", "bg-green-500"]
-        : ["bg-red-400", "bg-red-500"];
+    onMounted(async () => {
+      setTimeout(async () => {
+        balance.value = ethers.utils.formatEther(
+          //FIXME: not working
+          await provider.getSigner().getBalance()
+        );
+      }, 1000);
     });
 
     return {
       connected,
       address,
+      balance,
       networkId,
       changeNetwork,
       txInfo,
       mint,
-      pingColor,
     };
   },
 };

@@ -9,11 +9,12 @@ const jsdom = require("jsdom");
  */
 exports.main = async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
-  let address = req.query.address || req.body.address || '0x0000000000000000000000000000000000000000';
+  const address = req.query.address || req.body.address || '0x0000000000000000000000000000000000000000';
+  const decimal = req.query.decimal || req.body.decimal || '1000000000000000000000000';
 
   const holders = [];
   const result = await axios.get(
-    `https://mumbai.polygonscan.com/token/generic-tokenholders2?m=normal&a=${address}&s=1000000000000000000000000`
+    `https://mumbai.polygonscan.com/token/generic-tokenholders2?m=normal&a=${address}&s=${decimal}`
   );
 
   const dom = new jsdom.JSDOM(result.data);

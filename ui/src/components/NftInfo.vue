@@ -1,6 +1,44 @@
 <template>
   <div class="py-5">
-    <div class="px-5">
+    <div class="px-5 relative">
+      <div
+        class="
+          absolute
+          right-0
+          mr-5
+          inline-flex
+          items-center
+          font-mono
+          px-4
+          py-2
+          border-2 border-[#375bd2]
+          hover:border-blue-600
+          font-medium
+          text-[#375bd2]
+          hover:text-blue-600
+          rounded-md
+        "
+      >
+        checkUpkeep()
+        <span class="flex h-3 w-3 relative -mt-0.5 ml-2">
+          <span
+            class="
+              animate-ping
+              absolute
+              inline-flex
+              h-full
+              w-full
+              rounded-full
+              opacity-75
+            "
+            :class="pingColor[0]"
+          ></span>
+          <span
+            class="relative inline-flex rounded-full h-3 w-3"
+            :class="pingColor[1]"
+          ></span>
+        </span>
+      </div>
       <h2 class="text-2xl font-bold">{{ name }} ({{ symbol }})</h2>
       <div class="flex mt-2">
         <b>Address</b>:
@@ -81,10 +119,12 @@
 
 <script>
 import { ref } from "vue";
+import { useStore } from "vuex";
 import { ethers } from "ethers";
 import { defaultProvider } from "@/store/modules/web3";
 import SuperNFTArtifact from "../../../artifacts/contracts/NFT.sol/SuperNFT.json";
 import { ExternalLinkIcon } from "@heroicons/vue/outline";
+import utils from "@/mixins/utils";
 
 export default {
   name: "NFTInfo",
@@ -92,11 +132,15 @@ export default {
     ExternalLinkIcon,
   },
   setup() {
+    const store = useStore();
+    const _shorten = utils.methods._shorten;
+
     const name = ref("");
     const symbol = ref("");
     const price = ref(0);
     const owners = ref([]);
     const winners = ref([]);
+    const pingColor = ref(["bg-red-400", "bg-red-500"]);
 
     const SuperNFT = new ethers.Contract(
       process.env.VUE_APP_SUPER_NFT_ADDRESS,
@@ -145,9 +189,19 @@ export default {
           id: id.toNumber(),
           address: to,
         });
+        store.dispatch("notify", `NFT #${id.toNumber()} minted`);
+        store.dispatch(
+          "log",
+          `NFT #${id.toNumber()} minted for ${_shorten(to)}`
+        );
       } else if (to === "0x0000000000000000000000000000000000000000") {
         owners.value = owners.value.filter(
           (owner) => owner.id !== id.toNumber()
+        );
+        store.dispatch("notify", `NFT #${id.toNumber()} burned`);
+        store.dispatch(
+          "log",
+          `NFT #${id.toNumber()} burned by ${_shorten(from)}`
         );
       } else {
         owners.value = owners.value.map((owner) => {
@@ -159,15 +213,44 @@ export default {
           }
           return owner;
         });
+        store.dispatch("notify", `NFT #${id.toNumber()} transfered`);
+        store.dispatch(
+          "log",
+          `NFT #${id.toNumber()} transfered from ${_shorten(
+            from
+          )} to ${_shorten(to)}`
+        );
       }
     });
 
-    SuperNFT.on("NewWinner", (id, address, timestamp) => {
+    SuperNFT.on("NewWinner", (id, nftId, address, timestamp) => {
       winners.value.push({
-        id: id.toNumber(),
+        id: nftId.toNumber(),
         address: address,
         timestamp: timestamp.toNumber() * 1000,
       });
+      store.dispatch("notify", `New winner`);
+      store.dispatch(
+        "log",
+        `New winner ${_shorten(address)} (#${nftId.toNumber()})`
+      );
+    });
+
+    let lastCheck = false;
+    defaultProvider.on("block", async () => {
+      const upkeepNeeded = await SuperNFT._upkeepNeeded();
+      if (lastCheck !== upkeepNeeded) {
+        lastCheck = upkeepNeeded;
+        if (upkeepNeeded) {
+          pingColor.value = ["bg-green-400", "bg-green-500"];
+          store.dispatch("notify", ["Upkeep available", "green"]);
+          store.dispatch("log", "Upkeep available");
+        } else {
+          pingColor.value = ["bg-red-400", "bg-red-500"];
+          store.dispatch("notify", ["Upkeep performed", "green"]);
+          store.dispatch("log", "Upkeep performed");
+        }
+      }
     });
 
     return {
@@ -177,6 +260,7 @@ export default {
       price,
       owners,
       winners,
+      pingColor,
     };
   },
 };

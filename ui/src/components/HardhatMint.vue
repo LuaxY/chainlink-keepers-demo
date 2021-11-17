@@ -21,7 +21,7 @@
     >
       <div class="w-full flex gap-x-1 items-center font-lg">
         <div class="w-4/12 text-center font-bold">Address</div>
-        <div class="w-3/12 text-center font-bold text-[#8248e5]">MATIC</div>
+        <div class="w-2/12 text-center font-bold text-[#8248e5]">MATIC</div>
         <div class="w-2/12 text-center flex justify-center">
           <LightningBoltIcon class="w-4" />
         </div>
@@ -35,7 +35,7 @@
         <div class="w-4/12">
           <User :address="account.address" />
         </div>
-        <div class="w-3/12 text-center">
+        <div class="w-2/12 text-center">
           {{ _n(account.balance, "0,0.[000000]") }}
         </div>
         <div class="w-2/12 text-center">
@@ -47,8 +47,8 @@
             MINT
           </button>
         </div>
-        <div class="w-4/12 flex flex-nowrap">
-          {{ account.status }} &nbsp;
+        <div class="w-4/12 flex flex-nowrap items-center gap-x-1">
+          <span>{{ account.status }}</span>
           <a
             :href="_explorer(account.txHash, 'tx')"
             target="_blank"
@@ -58,6 +58,7 @@
             {{ _shorten(account.txHash) }}
             <ExternalLinkIcon class="ml-1 w-4" v-if="account.txHash" />
           </a>
+          <span class="truncate" v-if="account.error">{{ account.error }}</span>
         </div>
       </div>
     </div>
@@ -79,7 +80,7 @@ export default {
     LightningBoltIcon,
   },
   setup() {
-    const enabled = ref(true);
+    const enabled = ref(false);
     const accounts = ref([]);
     const signers = [];
 
@@ -118,19 +119,24 @@ export default {
     ];
 
     async function mint(accountIndex) {
-      const signer = signers[accountIndex];
-      accounts.value[accountIndex].status = "📩";
-      const tx = await SuperNFT.connect(signer).mint({
-        value: price,
-      });
-      accounts.value[accountIndex].txHash = tx.hash;
-      accounts.value[accountIndex].status = "⌛";
-      tx.wait().then(async () => {
-        accounts.value[accountIndex].balance = ethers.utils.formatEther(
-          await signer.getBalance()
-        );
-        accounts.value[accountIndex].status = "✅";
-      });
+      try {
+        const signer = signers[accountIndex];
+        accounts.value[accountIndex].status = "📩";
+        const tx = await SuperNFT.connect(signer).mint({
+          value: price,
+        });
+        accounts.value[accountIndex].txHash = tx.hash;
+        accounts.value[accountIndex].status = "⌛";
+        tx.wait().then(async () => {
+          accounts.value[accountIndex].balance = ethers.utils.formatEther(
+            await signer.getBalance()
+          );
+          accounts.value[accountIndex].status = "✅";
+        });
+      } catch (error) {
+        accounts.value[accountIndex].status = "❌";
+        accounts.value[accountIndex].error = error.message;
+      }
     }
 
     const getAccount = async (i) => {

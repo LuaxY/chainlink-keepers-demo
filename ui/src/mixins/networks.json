@@ -11,10 +11,11 @@
         },
         "multicall": "0x08411ADd0b5AA8ee47563b146743C13b3556c9Cc",
         "rpc": [
-            "https://rpc-mumbai.maticvigil.com",
+            "https://rpc-mumbai.maticvigil.com/v1/55c9075bda9215604ace475432571a30cb235b65",
             "https://rpc-mumbai.matic.today"
         ],
         "ws": [
+            "wss://rpc-mumbai.maticvigil.com/ws/v1/55c9075bda9215604ace475432571a30cb235b65",
             "wss://ws-mumbai.matic.today"
         ],
         "explorer": "https://mumbai.polygonscan.com"

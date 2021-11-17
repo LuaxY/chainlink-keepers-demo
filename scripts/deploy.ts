@@ -19,11 +19,6 @@ async function main() {
 
   await token.transfer(nft.address, ethers.utils.parseUnits("100"));
 
-  const LINK_ADDRESS = "0x326C977E6efc84E512bB9C30f76E30c160eD06FB";
-  const ERC20 = await ethers.getContractFactory("ERC20");
-  const LINK = ERC20.attach(LINK_ADDRESS);
-  await LINK.transfer(nft.address, ethers.utils.parseUnits("0.0005"));
-
   console.log(`hh verify --contract contracts/Token.sol:SuperToken ${token.address}`);
   console.log(`hh verify --contract contracts/NFT.sol:SuperNFT ${nft.address} ${token.address}`);
 }
