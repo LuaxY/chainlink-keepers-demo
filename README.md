@@ -1,5 +1,9 @@
 # Super NFT - Chainlink Keepers Demo
 
+Demo of a NFT that automatically reward randomly selected owners each 10 NFTs minted.
+
+![Demo Screenshot](screenshot.png)
+
 ## Getting Started
 
 Clone the repository and install dependencies via `yarn install`.  
