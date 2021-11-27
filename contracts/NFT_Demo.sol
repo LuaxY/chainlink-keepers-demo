@@ -67,19 +67,4 @@ contract SuperNFT is ERC721, ReentrancyGuard, Ownable, KeeperCompatibleInterface
         emit NewWinner(_winnersCounter, winnerId, recipient, block.timestamp);
         _winnersCounter++;
     }
-
-    // // Do not include in prod
-    // function reset() public onlyOwner {
-    //     for (uint i = 0; i< _winnersCounter ; i++) {
-    //         _winners[i] = Winner(0, 0, address(0), 0);
-    //     }
-
-    //     for (uint i = 0; i < _counter ; i++) {
-    //         _burn(i);
-    //     }
-
-    //     _counter = 0;
-    //     _lastRewardIndex = 0;
-    //     _winnersCounter = 0;
-    // }
 }

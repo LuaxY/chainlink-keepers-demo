@@ -6,7 +6,7 @@ async function main() {
   await token.deployed();
   console.log("SuperToken deployed at:", token.address);
 
-  const NFT = await ethers.getContractFactory("SuperNFT");
+  const NFT = await ethers.getContractFactory("SuperNFTVRF");
   const nft = await NFT.deploy(token.address);
   await nft.deployed();
   console.log("SuperNFT deployed at:", nft.address);
@@ -20,7 +20,7 @@ async function main() {
   await token.transfer(nft.address, ethers.utils.parseUnits("100"));
 
   console.log(`hh verify --contract contracts/Token.sol:SuperToken ${token.address}`);
-  console.log(`hh verify --contract contracts/NFT.sol:SuperNFT ${nft.address} ${token.address}`);
+  console.log(`hh verify --contract contracts/NFT_VRF.sol:SuperNFTVRF ${nft.address} ${token.address}`);
 }
 
 main().catch((error) => {

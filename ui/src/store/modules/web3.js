@@ -112,8 +112,7 @@ const actions = {
     provider = new ethers.providers.Web3Provider(web3Provider);
     const signer = provider.getSigner();
     const network = await provider.getNetwork();
-    const address = await signer.getAddress();
-    commit("address", address);
+    commit("address", await signer.getAddress());
     commit("network", network.chainId);
     commit("connected", true);
   },

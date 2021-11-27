@@ -8,7 +8,7 @@ async function main() {
   for (let i = 1; i <= accountsToFund; i++) {
     console.log((await master.sendTransaction({
       to: accounts[i].address,
-      value: ethers.utils.parseEther("0.01"),
+      value: ethers.utils.parseEther("0.02"),
     })).hash);
   }
 

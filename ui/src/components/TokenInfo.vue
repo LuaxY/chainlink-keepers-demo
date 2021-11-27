@@ -124,7 +124,7 @@ export default {
       setTimeout(async () => {
         await fetchHolders();
         store.dispatch("notify", "Token holders updated");
-        store.dispatch("log", "Token holders updated");
+        // store.dispatch("log", "Token holders updated");
       }, 30000);
 
       if (from === "0x0000000000000000000000000000000000000000") {

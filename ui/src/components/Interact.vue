@@ -66,8 +66,8 @@
         </div>
       </div>
     </div>
-    <div class="h-[1px] bg-gray-400 mt-5"></div>
-    <div class="pt-5 px-5 space-y-5">
+    <div class="h-[1px] bg-gray-400 mt-5" v-if="connected"></div>
+    <div class="pt-5 px-5 space-y-5" v-if="connected">
       <div class="flex justify-center items-center gap-x-5">
         <div class="px-4 py-2 border-2 border-gray-400 font-medium rounded-md">
           <b>Balance</b>: {{ _n(balance, "0,0.[000000]") }}
