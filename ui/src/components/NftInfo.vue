@@ -76,7 +76,7 @@
         class="flex gap-x-1 w-full"
       >
         <div class="w-1/6"></div>
-        <div class="w-1/6">{{ owner.id }}</div>
+        <div class="w-1/6">{{ owner.id+1 }}</div>
         <div class="w-2/6 pl-6">
           <User :address="owner.address" />
         </div>
@@ -189,7 +189,7 @@ export default {
           id: id.toNumber(),
           address: to,
         });
-        store.dispatch("notify", `NFT #${id.toNumber()} minted`);
+        store.dispatch("notify", `NFT #${id.toNumber()+1} minted`);
         store.dispatch(
           "log",
           `NFT #${id.toNumber()} minted for ${_shorten(to)}`
@@ -198,7 +198,7 @@ export default {
         owners.value = owners.value.filter(
           (owner) => owner.id !== id.toNumber()
         );
-        store.dispatch("notify", `NFT #${id.toNumber()} burned`);
+        store.dispatch("notify", `NFT #${id.toNumber()+1} burned`);
         store.dispatch(
           "log",
           `NFT #${id.toNumber()} burned by ${_shorten(from)}`
@@ -213,7 +213,7 @@ export default {
           }
           return owner;
         });
-        store.dispatch("notify", `NFT #${id.toNumber()} transfered`);
+        store.dispatch("notify", `NFT #${id.toNumber()+1} transfered`);
         store.dispatch(
           "log",
           `NFT #${id.toNumber()} transfered from ${_shorten(
