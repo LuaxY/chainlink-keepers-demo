@@ -31,3 +31,7 @@ Run the following comman in root directory to ditribute tokens
 ```
 npx hardhat scripts/funds.ts
 ```
+
+## How it works
+
+![Diagram](diagram.jpg)
